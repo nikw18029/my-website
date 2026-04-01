@@ -1,6 +1,5 @@
 document.getElementById("register-form").addEventListener("submit", async function (event) {
     event.preventDefault(); // stop page refresh
-
     const firstname = document.getElementById("firstname").value;
     const lastname = document.getElementById("lastname").value;
     const username = document.getElementById("username").value;

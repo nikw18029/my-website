@@ -17,8 +17,12 @@ document.getElementById("login-form").addEventListener("submit", async function 
         });
 
         const result = await response.json();
+        console.log(result);
 
         if (response.ok) {
+            localStorage.setItem("firstname", result.firstname);
+            localStorage.setItem("lastname", result.lastname);
+            localStorage.setItem("username", result.username);
             alert("Login successful ✅");
             window.location.href = "/home";
         } else {

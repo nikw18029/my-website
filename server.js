@@ -129,22 +129,34 @@ const server = http.createServer((req, res) => {
 
                     if (!user) {
                         res.writeHead(401, { "Content-Type": "application/json" });
-                        return res.end(JSON.stringify({ error: "Invalid credentials" }));
+                        return res.end(JSON.stringify({
+                            error: "Invalid credentials"
+                        }));
                     }
 
                     res.writeHead(200, { "Content-Type": "application/json" });
-                    res.end(JSON.stringify({ message: "Login successful" }));
+                    res.end(JSON.stringify({
+                        message: "Login successful",
+                        firstname: user.firstname,
+                        lastname: user.lastname,
+                        username: user.username
+                    }));
 
                 } catch (err) {
                     res.writeHead(500, { "Content-Type": "application/json" });
-                    res.end(JSON.stringify({ error: "Database error" }));
+                    res.end(JSON.stringify({
+                        error: "Database error"
+                    }));
                 }
             });
 
             return;
         }
 
-        res.writeHead(404, { "Content-Type": "text/plain" });
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({
+            message: "Login successful",
+        }));
         res.end("POST route not found");
         return;
     }
