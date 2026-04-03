@@ -58,3 +58,40 @@ input.a:focus {
     outline: 3px solid #ffeb37;
     border-color: #ffeb37;
 }
+a.navbar-button, a.navbar-button-left, a.navbar-button-right {
+    background-color: #000000;
+    color: rgb(255, 217, 0);
+    padding: 10px 20px;
+    border: 4px solid rgb(255, 217, 0);
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
+    text-decoration: none;
+}
+a.navbar-button-left{
+    border-top-left-radius: 36px;
+    border-bottom-left-radius: 36px;
+}
+a.navbar-button-right{
+    border-top-right-radius: 36px;
+    border-bottom-right-radius: 36px;
+}
+
+div.navbar {
+    display: flex;
+    position:fixed;
+    width :100%;
+    justify-content: center;
+    background-color: #f0ff9d;
+}
+svg.gameWindow {
+    border: 4px solid #000000;
+    border-radius: 36px;
+    background-color: #ffef5e;
+    width: 80vw;
+    height: 70vh;
+}
+h1.a{
+    color: rgb(0, 0, 0);
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 2px 2px 4px #ffef5e;
+}
