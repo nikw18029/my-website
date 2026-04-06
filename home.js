@@ -15,8 +15,8 @@ const gameWindow = document.getElementById("game-window");
 let x = parseFloat(dvd.getAttribute("x")) || 0;
 let y = parseFloat(dvd.getAttribute("y")) || 0;
 
-let dx = 2;
-let dy = 2;
+let dx = 5;
+let dy = 5;
 
 let canvasWidth = gameWindow.clientWidth;
 let canvasHeight = gameWindow.clientHeight;
@@ -25,27 +25,58 @@ const dvdWidth = parseFloat(dvd.getAttribute("width"));
 const dvdHeight = parseFloat(dvd.getAttribute("height"));
 
 function moveDVD() {
-    canvasHeight = gameWindow.clientHeight;
-    canvasWidth = gameWindow.clientWidth;
+    const canvasWidth = gameWindow.clientWidth;
+    const canvasHeight = gameWindow.clientHeight;
+
+    let hitXWall = false;
+    let hitYWall = false;
 
     x += dx;
     y += dy;
 
-    console.log(`{canvasWidth: ${canvasWidth}, canvasHeight: ${canvasHeight}, dvdWidth: ${dvdWidth}, dvdHeight: ${dvdHeight}, x: ${x}, y: ${y}}`);
-
-    if (x + dvdWidth >= canvasWidth || x <= 0) {
+    // right wall
+    if (x + dvdWidth >= canvasWidth) {
+        x = canvasWidth - dvdWidth;
         dx = -dx;
-        x = Math.min(x, canvasWidth - dvdWidth);
+        hitXWall = true;
     }
-    if (y + dvdHeight >= canvasHeight || y <= 0) {
+
+    // left wall
+    if (x <= 0) {
+        x = 0;
+        dx = -dx;
+        hitXWall = true;
+    }
+
+    // bottom wall
+    if (y + dvdHeight >= canvasHeight) {
+        y = canvasHeight - dvdHeight;
         dy = -dy;
-        y = Math.min(y, canvasHeight - dvdHeight);
+        hitYWall = true;
+    }
+
+    // top wall
+    if (y <= 0) {
+        y = 0;
+        dy = -dy;
+        hitYWall = true;
+    }
+
+    // corner detection 🎯
+    if (hitXWall && hitYWall) {
+        console.log("Corner hit!");
+        changeColor(); // optional effect
     }
 
     dvd.setAttribute("x", x);
     dvd.setAttribute("y", y);
-
     requestAnimationFrame(moveDVD);
+}
+function changeColor() {
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+    dvd.setAttribute("fill", `rgb(${r},${g},${b})`);
 }
 
 moveDVD();

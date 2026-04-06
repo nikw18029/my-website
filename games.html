@@ -1,0 +1,39 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
+    <script src="games.js" defer></script>
+    <title>Nik Walker's Website</title>
+</head>
+
+<body>
+    <div class="navbar">
+        <a class="navbar-button-left" href="/home">Home</a>
+        <a class="navbar-button" href="/games">Games</a>
+        <a class="navbar-button-right" href="/contact">Contact</a>
+    </div>
+    <div class="content">
+        <h1 id="welcome" class="a">Welcome to Nik Walker's Website!</h1>
+        <div class="content">
+            <div class="game-selection">
+                <div class="game-card">
+                    <h2 class="game-title">Snake</h2>
+                    <p class="game-description">Play the classic Snake game!</p>
+                    <img class="game-image" src="img/snake.png" alt="Snake">
+                    <button class="play-button" onclick="window.location.href='/play/snake'">Play</button>
+                </div>
+                <div class="game-card">
+                    <h2 class="game-title">Flappy Ball</h2>
+                    <p class="game-description">Flap your ball and avoid green towers for as long as you can!</p>
+                    <img class="game-image" src="img/flappy.png" alt="Flappy Ball">
+                    <button class="play-button" onclick="window.location.href='/play/flappy'">Play</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

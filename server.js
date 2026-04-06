@@ -163,16 +163,25 @@ const server = http.createServer((req, res) => {
 
     if (req.method === "GET") {
         let filePath;
+        let cleanUrl = req.url.split("?")[0];
 
-        if (req.url === "/") {
+        if (cleanUrl === "/") {
             filePath = path.join(baseDir, "index.html");
         }
-        else if (path.extname(req.url)) {
-            filePath = path.join(baseDir, req.url);
+        else if (cleanUrl.startsWith("/play/") && !path.extname(cleanUrl)) {
+            let gameTitle = decodeURIComponent(cleanUrl.replace("/play/", ""));
+            gameTitle = gameTitle.replace(/^\/+|\/+$/g, "");
+            filePath = path.join(baseDir, "play", gameTitle + ".html");
+        }
+        else if (path.extname(cleanUrl)) {
+            filePath = path.join(baseDir, cleanUrl.replace(/^\/+/, ""));
         }
         else {
-            filePath = path.join(baseDir, req.url + ".html");
+            filePath = path.join(baseDir, cleanUrl.replace(/^\/+/, "") + ".html");
         }
+
+        console.log("Request URL:", cleanUrl);
+        console.log("Resolved file path:", filePath);
 
         return serveFile(res, filePath);
     }
@@ -184,3 +193,4 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
+
