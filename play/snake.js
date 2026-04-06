@@ -78,7 +78,13 @@ function checkForFoodCollision() {
     let headY = parseFloat(snakeHead.getAttribute("cy"));
     let foodX = parseFloat(food.getAttribute("cx"));
     let foodY = parseFloat(food.getAttribute("cy"));
-
+    for(let segment of snakeBody){
+        let segX = parseFloat(segment.getAttribute("cx"));
+        let segY = parseFloat(segment.getAttribute("cy"));
+        if(foodX === segX && foodY === segY){
+            return true;
+        }
+    }
     return headX === foodX && headY === foodY;
 }
 
