@@ -9,6 +9,10 @@ gameCards.forEach(card => {
             child.style.backgroundColor = getOppositeColor(randomColor);
             child.style.color = randomColor;
         }
+        if(child.classList && child.classList.contains("game-description")){
+            child.style.color = getOppositeColor(randomColor);
+            child.style.textShadow = "2px 2px 4px " + randomColor;
+        }
     });
 });
 

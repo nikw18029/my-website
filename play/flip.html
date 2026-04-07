@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
-    <script src="flappy.js" defer></script>
+    <script src="flip.js" defer></script>
     <title>Nik Walker's Website</title>
 </head>
 
@@ -16,21 +16,21 @@
     </div>
 
     <div class="landing">
-        <h1 class="a">Flappy Ball</h1>
+        <h1 class="a">Gravity Flip</h1>
 
         <svg
             id="game-window"
             class="gameWindow"
             style="background-color: rgb(98, 161, 255); border: 10px solid rgb(255, 217, 0); border-radius: 0px; width: 70vh; height: 70vh;"
         >
-            <circle id="bird" cx="10" cy="10" r="10" fill="yellow" />
+            <circle id="player" cx="10" cy="10" r="10" fill="yellow" />
             <text id="score-display" x="10" y="20" fill="black" font-size="20px">Score: 0</text>
         
 
         </svg>
 
         <p class="a">
-            Click to flap your ball and avoid the green towers for as long as you can! The longer you survive, the higher your score.
+            Click to flip gravity and navigate through the obstacles! The longer you survive, the higher your score.
         </p>
     </div>
 </body>
