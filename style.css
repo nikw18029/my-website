@@ -230,4 +230,8 @@ body {
     div.landing {
         padding-top: 120px;
     }
+    svg.gameWindow {
+        width: 50vh;
+        height: 50vh;
+    }
 }
