@@ -177,8 +177,45 @@ function changeColors(){
     }
     requestAnimationFrame(changeColors);
 }
+let startX = 0;
+let startY = 0;
 
+function swipeStart(event) {
+    const touch = event.changedTouches[0];
+    startX = touch.clientX;
+    startY = touch.clientY;
+}
+
+function swipeEnd(event) {
+    const touch = event.changedTouches[0];
+    const endX = touch.clientX;
+    const endY = touch.clientY;
+
+    const deltaX = endX - startX;
+    const deltaY = endY - startY;
+
+    // ignore tiny swipes
+    if (Math.abs(deltaX) < 20 && Math.abs(deltaY) < 20) {
+        return;
+    }
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        if (deltaX > 0 && direction !== "left") {
+            direction = "right";
+        } else if (deltaX < 0 && direction !== "right") {
+            direction = "left";
+        }
+    } else {
+        if (deltaY > 0 && direction !== "up") {
+            direction = "down";
+        } else if (deltaY < 0 && direction !== "down") {
+            direction = "up";
+        }
+    }
+}
 document.addEventListener("keydown", changeDirection);
+document.addEventListener("touchstart", swipeStart);
+document.addEventListener("touchend", swipeEnd);
 if(rainbowMode) {
     console.log("Rainbow mode activated! 🌈");
     changeColors();
