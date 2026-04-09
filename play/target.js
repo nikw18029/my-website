@@ -65,6 +65,7 @@ function removeTargetHit(id){
     generateTarget();
 }
 function updateScore() {
+    console.log(`${ids.length} targets currently on screen. ${targetsHit} hit, ${targetsMissed} missed.`);
     score = targetsHit / (targetsHit + targetsMissed) * 100;
     let scoreDisplay = document.getElementById('score-display');
     scoreDisplay.textContent = `Score: ${score.toFixed(2)}%`;
@@ -78,5 +79,12 @@ function CalculateTextWidth(text, font) {
     let metrics = context.measureText(text);
     return metrics.width;
 }
+function ChanceToSpawnNewTarget() {
+    let chance = 0.3;
+    if (Math.random() < chance) {
+        generateTarget();
+    }
+}
 generateTarget();
 setTimeout(() => generateTarget(), 2000);
+setInterval(ChanceToSpawnNewTarget, 10000);
