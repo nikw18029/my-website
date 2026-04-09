@@ -149,8 +149,8 @@ svg.gameWindow {
     border: 4px solid #000000;
     border-radius: 36px;
     background-color: #ffef5e;
-    width: 80vw;
-    height: 70vh;
+    width: 60vh;
+    height: 60vh;
 }
 h1.a{
     color: rgb(0, 0, 0);
