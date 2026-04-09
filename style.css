@@ -231,7 +231,7 @@ body {
         padding-top: 120px;
     }
     svg.gameWindow {
-        width: 50vh;
-        height: 50vh;
+        width: 100vw;
+        height: 100vw;
     }
 }
