@@ -18,6 +18,9 @@
         <a class="navbar-button-right" href="/contact">Contact</a>
     </div>
     <div class="landing">
+        <div class="search-container">
+            <input type="text" id="game-search" placeholder="Search games..." onkeyup="filterGames()">
+        </div>
         <div class="game-selection">
             <div class="game-card">
                 <h2 class="game-title">Snake</h2>
@@ -42,6 +45,12 @@
                 <p class="game-description">Bounce the ball with the paddle!</p>
                 <img class="game-image" src="img/paddle.png" alt="Paddle Bounce">
                 <button class="play-button" onclick="window.location.href='/play/paddle'">Play</button>
+            </div>
+            <div class="game-card">
+                <h2 class="game-title">Shoot The Targets</h2>
+                <p class="game-description">Shoot the targets and score points!</p>
+                <img class="game-image" src="img/target.png" alt="Shoot The Targets">
+                <button class="play-button" onclick="window.location.href='/play/target'">Play</button>
             </div>
         </div>
 </body>

@@ -15,7 +15,21 @@ gameCards.forEach(card => {
         }
     });
 });
+function filterGames() {
+    const input = document.getElementById("game-search").value.toLowerCase();
+    const cards = document.querySelectorAll(".game-card");
 
+    cards.forEach(card => {
+        const title = card.querySelector(".game-title").textContent.toLowerCase();
+        const description = card.querySelector(".game-description").textContent.toLowerCase();
+
+        if (title.includes(input) || description.includes(input)) {
+            card.style.display = "flex";
+        } else {
+            card.style.display = "none";
+        }
+    });
+}
 function getRandomColor() {
     const r = Math.floor(Math.random() * 256);
     const g = Math.floor(Math.random() * 256);
