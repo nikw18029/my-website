@@ -43,6 +43,7 @@ function Start() {
     enemyPaddle.setAttribute("stroke-width", "2");
     gameWindow.style.backgroundColor = "black";
     addEventListener("mousemove", MovePlayerPaddle);
+    addEventListener("touchmove", MovePlayerPaddle);
     StartBall();
     requestAnimationFrame(Draw);
 }
