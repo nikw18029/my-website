@@ -235,3 +235,6 @@ body {
         height: 100vw;
     }
 }
+.gameWindow {
+    touch-action: none;
+}
