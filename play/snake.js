@@ -59,17 +59,28 @@ function draw() {
 }
 
 function changeDirection(event) {
-    if (event.key === "d" && direction !== "left") {
-        direction = "right";
-    }
-    else if (event.key === "a" && direction !== "right") {
-        direction = "left";
-    }
-    else if (event.key === "s" && direction !== "up") {
-        direction = "down";
-    }
-    else if (event.key === "w" && direction !== "down") {
-        direction = "up";
+    const keyMap = {
+        w: "up",
+        a: "left",
+        s: "down",
+        d: "right",
+        ArrowUp: "up",
+        ArrowLeft: "left",
+        ArrowDown: "down",
+        ArrowRight: "right"
+    };
+
+    const newDirection = keyMap[event.key];
+
+    if (!newDirection) return;
+
+    if (
+        (newDirection === "up" && direction !== "down") ||
+        (newDirection === "down" && direction !== "up") ||
+        (newDirection === "left" && direction !== "right") ||
+        (newDirection === "right" && direction !== "left")
+    ) {
+        direction = newDirection;
     }
 }
 
