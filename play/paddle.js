@@ -43,7 +43,12 @@ function Start() {
     enemyPaddle.setAttribute("stroke-width", "2");
     gameWindow.style.backgroundColor = "black";
     addEventListener("mousemove", MovePlayerPaddle);
+<<<<<<< Updated upstream
     addEventListener("touchmove", MovePlayerPaddle);
+=======
+    gameWindow.addEventListener("touchstart", MovePlayerPaddleTouch, { passive: false });
+    gameWindow.addEventListener("touchmove", MovePlayerPaddleTouch, { passive: false });
+>>>>>>> Stashed changes
     StartBall();
     requestAnimationFrame(Draw);
 }
@@ -223,5 +228,18 @@ function BallColorShift() {
     hue = (hue + 2) % 360;
     ball.setAttribute("fill", `hsl(${hue}, 100%, 50%)`);
     ball.setAttribute("stroke", `hsl(${(hue + 180) % 360}, 100%, 50%)`);
+}
+function MovePlayerPaddleTouch(event) {
+    if(!playing) return;
+    let rect = gameWindow.getBoundingClientRect();
+    let touchX = event.touches[0].clientX - rect.left;
+    let paddleX = touchX - playerPaddle.getAttribute("width") / 2;
+    if (paddleX < 0) {
+        paddleX = 0;
+    }
+    if (paddleX > gameWindow.clientWidth - playerPaddle.getAttribute("width")) {
+        paddleX = gameWindow.clientWidth - playerPaddle.getAttribute("width");
+    }
+    playerPaddle.setAttribute("x", paddleX);
 }
 Start();
