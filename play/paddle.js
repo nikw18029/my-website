@@ -43,12 +43,8 @@ function Start() {
     enemyPaddle.setAttribute("stroke-width", "2");
     gameWindow.style.backgroundColor = "black";
     addEventListener("mousemove", MovePlayerPaddle);
-<<<<<<< Updated upstream
-    addEventListener("touchmove", MovePlayerPaddle);
-=======
     gameWindow.addEventListener("touchstart", MovePlayerPaddleTouch, { passive: false });
     gameWindow.addEventListener("touchmove", MovePlayerPaddleTouch, { passive: false });
->>>>>>> Stashed changes
     StartBall();
     requestAnimationFrame(Draw);
 }
