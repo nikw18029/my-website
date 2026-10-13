@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="otter.js" defer></script>
+    <title>Sea Otter Adventure</title>
+
+    <link rel="stylesheet" href="otter-style.css">
+</head>
+
+<body>
+    <div id="gameOverScreen">
+        <div id="gameOverBox">
+            <h1>Game Over</h1>
+
+            <div id="finalScore">Score: 0</div>
+
+            <button id="restartButton">
+                Dive Again
+            </button>
+        </div>
+    </div>
+    <div id="topHud">
+
+        <div id="scoreText">0</div>
+
+        <div id="healthBarContainer">
+            <div id="healthBar"></div>
+        </div>
+
+    </div>
+    </div>
+    <svg id="gameCanvas" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="xMidYMid slice">
+    </svg>
+
+</body>
+
+</html>

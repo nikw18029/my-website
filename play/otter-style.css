@@ -1,0 +1,178 @@
+html,
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+svg {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    background-color: hsl(226, 53%, 65%);
+    image-rendering: pixelated;
+}
+#scoreText {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+
+    padding: 10px 16px;
+
+    background: #2ec4d6;
+    color: #ffe66d;
+
+    font-family: "Trebuchet MS", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: 1px;
+
+    border: 4px solid #073b4c;
+    border-radius: 14px;
+
+    box-shadow:
+        0 5px 0 #052b38,
+        0 8px 12px rgba(0, 0, 0, 0.25);
+
+    text-shadow:
+        2px 2px 0 #ef476f,
+        3px 3px 0 #073b4c;
+
+    z-index: 50;
+
+    user-select: none;
+    pointer-events: none;
+}
+#gameOverScreen {
+    position: fixed;
+    inset: 0;
+
+    display: none;
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(0, 35, 70, 0.65);
+
+    z-index: 100;
+}
+
+#gameOverBox {
+    width: 340px;
+    padding: 36px 28px;
+
+    text-align: center;
+
+    background: #2ec4d6;
+
+    border: 6px solid #073b4c;
+    border-radius: 28px;
+
+    box-shadow:
+        0 10px 0 #052b38,
+        0 16px 25px rgba(0, 0, 0, 0.35);
+
+    font-family: "Trebuchet MS", Arial, sans-serif;
+}
+
+#gameOverBox h1 {
+    margin: 0 0 24px;
+
+    font-size: 44px;
+    font-weight: 900;
+
+    color: #ffe66d;
+
+    letter-spacing: 2px;
+
+    text-shadow:
+        4px 4px 0 #ef476f,
+        6px 6px 0 #073b4c;
+
+    transform: rotate(-2deg);
+}
+
+#finalScore {
+    display: inline-block;
+
+    margin-bottom: 28px;
+    padding: 12px 20px;
+
+    background: #ffffff;
+
+    color: #073b4c;
+
+    font-size: 26px;
+    font-weight: bold;
+
+    border: 4px solid #073b4c;
+    border-radius: 16px;
+
+    box-shadow: 0 6px 0 #073b4c;
+}
+
+#restartButton {
+    padding: 14px 26px;
+
+    background: #ff7b54;
+
+    color: white;
+
+    font-family: inherit;
+    font-size: 19px;
+    font-weight: 900;
+
+    border: 5px solid #073b4c;
+    border-radius: 16px;
+
+    cursor: pointer;
+
+    box-shadow: 0 7px 0 #9e3d2c;
+
+    transition:
+        transform 0.08s ease,
+        box-shadow 0.08s ease,
+        background 0.08s ease;
+}
+
+#restartButton:hover {
+    background: #ff9675;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 9px 0 #9e3d2c;
+}
+
+#restartButton:active {
+    transform: translateY(6px);
+
+    box-shadow: 0 1px 0 #9e3d2c;
+}
+#healthBarContainer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+
+    width: 300px;
+    height: 30px;
+
+    background: #333;
+
+    border: 4px solid #073b4c;
+    border-radius: 15px;
+
+    overflow: hidden;
+
+    z-index: 50;
+
+    box-shadow: 0 5px 0 #052b38;
+}
+
+#healthBar {
+    width: 100%;
+    height: 100%;
+
+    background: #2ecc71;
+
+    transition: width 0.25s ease;
+}
