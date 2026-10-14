@@ -222,6 +222,7 @@ canvas.appendChild(Player);
 
 requestAnimationFrame(Draw);
 SpawnObstaclesAsync();
+ShrimpSpawnerAsync();
 swimAnimation.PlayAnimation(true);
 
 // ==============================
@@ -405,7 +406,19 @@ function checkObstacleCollision() {
             collisionY < obstacleY + obstacleHeight &&
             collisionY + collisionHeight > obstacleY
         ) {
-
+            if(obstacle.getAttribute("class") === "shrimp"){
+                playSound("resources/otterEat.mp3");
+                otterHealth = Math.min(3, otterHealth + 1);
+                healthBar.style.width =
+                    (Math.max(0, otterHealth) / 3 * 100) + "%";
+                healthBar.style.backgroundColor =
+                    otterHealth === 1 ? "rgb(255, 0, 0)" :
+                    otterHealth === 2 ? "rgb(255, 208, 0)" :
+                    otterHealth === 3 ? "#2ecc71" :
+                    "#0e0e0e";
+                RemoveObstacle(obstacle);
+                return;
+            }
             invulnerable = true;
             Player.setAttribute("opacity", "0.5");
             Player.style.filter = "sepia(1) saturate(100%) hue-rotate(-50deg)";
@@ -689,8 +702,53 @@ async function SpawnObstaclesAsync() {
 }
 
 // ==============================
-// PARALLAX BACKGROUND MOVEMENT
+// SHRIMP SPAWNING
 // ==============================
+function SpawnShrimp(){
+    let MAX_SPAWN_ATTEMPTS = 10
+    for(let i = 0; i < 10; i++){
+        let shrimpY = Math.random() * (canvasHeight - OBSTACLE_SIZE);
+        let shrimpX = canvasWidth + Math.random() * sx(100);
+        let shrimpWidth = OBSTACLE_SIZE;
+        let shrimpHeight = OBSTACLE_SIZE;
+        for(obstacle of obstacles){
+            let otherX = parseFloat(obstacle.getAttribute("x"));
+            let otherY = parseFloat(obstacle.getAttribute("y"));
+            let otherWidth = parseFloat(obstacle.getAttribute("width"));
+            let otherHeight = parseFloat(obstacle.getAttribute("height"));
+            if(
+                shrimpX < otherX + otherWidth &&
+                shrimpX + shrimpWidth > otherX &&
+                shrimpY < otherY + otherHeight &&
+                shrimpY + shrimpHeight > otherY
+            ){
+                continue;
+            }
+        }
+        let shrimp = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "image"
+        );
+        shrimp.setAttribute("x", shrimpX);
+        shrimp.setAttribute("y", shrimpY);
+        shrimp.setAttribute("width", shrimpWidth);
+        shrimp.setAttribute("height", shrimpHeight);
+        shrimp.setAttribute("href", "resources/shrimp.png");
+        shrimp.setAttribute("class", "shrimp");
+        canvas.appendChild(shrimp);
+        obstacles.push(shrimp);
+        return;
+    }
+}
+
+async function ShrimpSpawnerAsync() {
+    while (true) {
+        if (!paused && !document.hidden) {
+            SpawnShrimp();
+        }
+        await new Promise(resolve => setTimeout(resolve, Math.random() * 3000 + 5000)); // Adjust spawn rate as needed
+    }
+}
 
 function MoveParralaxBackground(deltaTime) {
     const frameScale = deltaTime * TARGET_FPS;
