@@ -746,7 +746,7 @@ async function ShrimpSpawnerAsync() {
         if (!paused && !document.hidden) {
             SpawnShrimp();
         }
-        await new Promise(resolve => setTimeout(resolve, Math.random() * 3000 + 5000)); // Adjust spawn rate as needed
+        await new Promise(resolve => setTimeout(resolve, Math.random() * 10000 + 500)); // Adjust spawn rate as needed
     }
 }
 
