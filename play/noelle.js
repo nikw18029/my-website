@@ -1,27 +1,36 @@
 
 const canvas = document.getElementById("canvas");
 
-let score = 0;
-
 const PLAYER_SIZE = 50;
 const GROUND_HEIGHT = 50;
 
-// Player sprites
+const WIN_SCORE = 40;
+const MAX_BLUR = 20;
+
+// Game state
+let score = 0;
+let gameRunning = false;
+let gameWon = false;
+
+// Sprites
 const PIG_IDLE = "noelle_resources/pig_1.png";
 const PIG_WALK = "noelle_resources/pig_2.png";
+const MARG_IMAGE = "noelle_resources/marg.png";
+const TOMATO_IMAGE = "noelle_resources/tomato.png";
 
-// Animation settings
+// Walking animation
 const ANIMATION_SPEED = 0.15;
+
 let animationTimer = 0;
 let currentFrame = 0;
 
-// Preload images to prevent flickering
-[PIG_IDLE, PIG_WALK].forEach((src) => {
+// Preload artwork
+[PIG_IDLE, PIG_WALK, MARG_IMAGE, TOMATO_IMAGE].forEach(src => {
     const img = new Image();
     img.src = src;
 });
 
-// Physics settings
+// Physics
 const physics = {
     acceleration: 1800,
     maxSpeed: 500,
@@ -30,7 +39,6 @@ const physics = {
     jumpStrength: 650
 };
 
-// Player state
 const playerState = {
     x: 100,
     y: 100,
@@ -40,7 +48,6 @@ const playerState = {
     facing: 1
 };
 
-// Keyboard input
 const keys = {
     left: false,
     right: false,
@@ -52,7 +59,13 @@ let ground;
 let canvasWidth;
 let canvasHeight;
 
-// Create SVG element helper
+let lastTime = null;
+let animationFrameId = null;
+
+let margSpawnTimeout = null;
+let tomatoSpawnTimeout = null;
+
+// Create SVG elements
 function createSVGElement(type) {
     return document.createElementNS(
         "http://www.w3.org/2000/svg",
@@ -60,16 +73,14 @@ function createSVGElement(type) {
     );
 }
 
-// Create ground
+// Ground
 function createGround() {
     ground = createSVGElement("rect");
-
     ground.setAttribute("fill", "#216524");
-
     canvas.appendChild(ground);
 }
 
-// Create player
+// Player
 function createPlayer() {
     player = createSVGElement("image");
 
@@ -81,7 +92,7 @@ function createPlayer() {
     canvas.appendChild(player);
 }
 
-// Resize canvas
+// Resize
 function resizeCanvas() {
     canvasWidth = canvas.clientWidth;
     canvasHeight = canvas.clientHeight;
@@ -105,37 +116,32 @@ function resizeCanvas() {
         playerState.y,
         canvasHeight - GROUND_HEIGHT - PLAYER_SIZE
     );
+
+    renderPlayer();
 }
 
-// Update player physics
+// Physics
 function updatePlayer(dt) {
     const p = playerState;
 
     let direction = 0;
 
-    // Horizontal movement
     if (keys.left) direction -= 1;
     if (keys.right) direction += 1;
 
-    // Update facing direction
     if (direction !== 0) {
         p.facing = direction;
-    }
-
-    // Acceleration and friction
-    if (direction !== 0) {
         p.vx += direction * physics.acceleration * dt;
     } else {
-        const frictionAmount = physics.friction * dt;
+        const friction = physics.friction * dt;
 
-        if (Math.abs(p.vx) <= frictionAmount) {
+        if (Math.abs(p.vx) <= friction) {
             p.vx = 0;
         } else {
-            p.vx -= Math.sign(p.vx) * frictionAmount;
+            p.vx -= Math.sign(p.vx) * friction;
         }
     }
 
-    // Limit horizontal speed
     p.vx = Math.max(
         -physics.maxSpeed,
         Math.min(physics.maxSpeed, p.vx)
@@ -150,7 +156,6 @@ function updatePlayer(dt) {
     // Gravity
     p.vy += physics.gravity * dt;
 
-    // Apply movement
     p.x += p.vx * dt;
     p.y += p.vy * dt;
 
@@ -163,7 +168,7 @@ function updatePlayer(dt) {
         p.grounded = true;
     }
 
-    // Left and right boundaries
+    // Boundaries
     if (p.x < 0) {
         p.x = 0;
         p.vx = 0;
@@ -177,9 +182,8 @@ function updatePlayer(dt) {
     renderPlayer();
 }
 
-// Update walking animation
+// Walking animation
 function updatePlayerAnimation(dt) {
-    // Animate whenever the pig is moving horizontally
     const moving = Math.abs(playerState.vx) > 5;
 
     if (moving) {
@@ -187,27 +191,23 @@ function updatePlayerAnimation(dt) {
 
         if (animationTimer >= ANIMATION_SPEED) {
             animationTimer %= ANIMATION_SPEED;
-
-            // Alternate between frame 0 and frame 1
             currentFrame = 1 - currentFrame;
         }
     } else {
-        // Return to idle sprite when stopped
         animationTimer = 0;
         currentFrame = 0;
     }
 
-    const newImage = currentFrame === 0
+    const image = currentFrame === 0
         ? PIG_IDLE
         : PIG_WALK;
 
-    // Only update the image when the frame changes
-    if (player.getAttribute("href") !== newImage) {
-        player.setAttribute("href", newImage);
+    if (player.getAttribute("href") !== image) {
+        player.setAttribute("href", image);
     }
 }
 
-// Render player and flip sprite
+// Render player
 function renderPlayer() {
     const p = playerState;
 
@@ -215,7 +215,6 @@ function renderPlayer() {
     player.setAttribute("y", p.y);
 
     if (p.facing === -1) {
-        // Flip horizontally around player's center
         player.setAttribute(
             "transform",
             `translate(${2 * p.x + PLAYER_SIZE}, 0) scale(-1, 1)`
@@ -226,70 +225,214 @@ function renderPlayer() {
 }
 
 // Keyboard controls
-document.addEventListener("keydown", (event) => {
+document.addEventListener("keydown", event => {
     const key = event.key.toLowerCase();
 
-    if ([
-        "arrowleft",
-        "arrowright",
-        "arrowup",
-        " "
-    ].includes(key)) {
+    if (["arrowleft", "arrowright", "arrowup", " "].includes(key)) {
         event.preventDefault();
     }
 
-    switch (key) {
-        case "arrowleft":
-        case "a":
-            keys.left = true;
-            break;
+    if (!gameRunning) return;
 
-        case "arrowright":
-        case "d":
-            keys.right = true;
-            break;
+    if (key === "arrowleft" || key === "a") {
+        keys.left = true;
+    }
 
-        case "arrowup":
-        case "w":
-        case " ":
-            keys.jump = true;
-            break;
+    if (key === "arrowright" || key === "d") {
+        keys.right = true;
+    }
+
+    if (key === "arrowup" || key === "w" || key === " ") {
+        keys.jump = true;
     }
 });
 
-document.addEventListener("keyup", (event) => {
+document.addEventListener("keyup", event => {
     const key = event.key.toLowerCase();
 
-    switch (key) {
-        case "arrowleft":
-        case "a":
-            keys.left = false;
-            break;
+    if (key === "arrowleft" || key === "a") {
+        keys.left = false;
+    }
 
-        case "arrowright":
-        case "d":
-            keys.right = false;
-            break;
+    if (key === "arrowright" || key === "d") {
+        keys.right = false;
+    }
 
-        case "arrowup":
-        case "w":
-        case " ":
-            keys.jump = false;
-            break;
+    if (key === "arrowup" || key === "w" || key === " ") {
+        keys.jump = false;
     }
 });
 
-// Stop movement when window loses focus
 window.addEventListener("blur", () => {
     keys.left = false;
     keys.right = false;
     keys.jump = false;
 });
 
-// Game loop
-let lastTime = null;
+// Create falling item
+function createFallingItem(type, image) {
+    const item = createSVGElement("image");
 
+    item.classList.add("falling-item", type);
+
+    item.setAttribute("width", PLAYER_SIZE);
+    item.setAttribute("height", PLAYER_SIZE);
+    item.setAttribute("href", image);
+
+    item.setAttribute(
+        "x",
+        Math.random() * Math.max(0, canvasWidth - PLAYER_SIZE)
+    );
+
+    item.setAttribute("y", -PLAYER_SIZE);
+
+    canvas.appendChild(item);
+}
+
+// Spawn Margs
+function margSpawnLoop() {
+    if (!gameRunning) return;
+
+    createFallingItem("marg", MARG_IMAGE);
+
+    margSpawnTimeout = setTimeout(
+        margSpawnLoop,
+        Math.random() * 1000 + 800
+    );
+}
+
+// Spawn tomatoes
+function tomatoSpawnLoop() {
+    if (!gameRunning) return;
+
+    createFallingItem("tomato", TOMATO_IMAGE);
+
+    tomatoSpawnTimeout = setTimeout(
+        tomatoSpawnLoop,
+        Math.random() * 1000 + 500
+    );
+}
+
+// Sound effects
+function playSound(type) {
+    let src;
+
+    if (type === "score") {
+        src = "noelle_resources/score.mp3";
+    } else {
+        src = "noelle_resources/splat.mp3";
+    }
+
+    const audio = new Audio(src);
+    audio.play().catch(() => {});
+}
+
+// Update score and blur
+function updateScore(amount) {
+    if (!gameRunning) return;
+
+    score = Math.max(0, score + amount);
+
+    document.getElementById("score").textContent =
+        String(score).padStart(4, "0");
+
+    updateBlur();
+
+    // Check win condition
+    if (score >= WIN_SCORE) {
+        winGame();
+    }
+}
+
+// Update blur and vignette
+function updateBlur() {
+    const progress = Math.min(score / WIN_SCORE, 1);
+
+    const blurAmount = progress * MAX_BLUR;
+    const percentage = Math.round(progress * 100);
+
+    // Blur SVG
+    canvas.style.filter = `blur(${blurAmount}px)`;
+
+    // Darken vignette as score increases
+    const vignette = document.getElementById("vignette");
+
+    vignette.style.opacity = Math.min(
+        progress * 0.85,
+        0.85
+    );
+
+    // Update tipsy meter
+    document.getElementById("tipsy-fill").style.width =
+        `${percentage}%`;
+
+    document.getElementById("tipsy-percent").textContent =
+        `${percentage}%`;
+}
+
+// Collision helper
+function isColliding(item) {
+    const itemX = parseFloat(item.getAttribute("x"));
+    const itemY = parseFloat(item.getAttribute("y"));
+
+    return (
+        itemX < playerState.x + PLAYER_SIZE &&
+        itemX + PLAYER_SIZE > playerState.x &&
+        itemY < playerState.y + PLAYER_SIZE &&
+        itemY + PLAYER_SIZE > playerState.y
+    );
+}
+
+// Falling item movement and collision
+function updateFallingItems(dt) {
+    const items = canvas.querySelectorAll(".falling-item");
+
+    // Keep the original falling speed (~125px/sec)
+    const fallSpeed = 125;
+
+    for (const item of items) {
+        if (!gameRunning) break;
+
+        const y = parseFloat(item.getAttribute("y"));
+        const newY = y + fallSpeed * dt;
+
+        item.setAttribute("y", newY);
+
+        // Player collision
+        if (isColliding(item)) {
+            const isMarg = item.classList.contains("marg");
+
+            item.remove();
+
+            if (isMarg) {
+                playSound("score");
+                updateScore(1);
+            } else {
+                playSound("splat");
+                updateScore(-1);
+            }
+
+            continue;
+        }
+
+        // Ground collision
+        if (
+            newY + PLAYER_SIZE >=
+            canvasHeight - GROUND_HEIGHT
+        ) {
+            if (item.classList.contains("tomato")) {
+                playSound("splat");
+            }
+
+            item.remove();
+        }
+    }
+}
+
+// Main game loop
 function gameLoop(timestamp) {
+    if (!gameRunning) return;
+
     if (lastTime === null) {
         lastTime = timestamp;
     }
@@ -301,143 +444,108 @@ function gameLoop(timestamp) {
 
     lastTime = timestamp;
 
-    // Update physics
     updatePlayer(dt);
-
-    // Update walking animation
     updatePlayerAnimation(dt);
+    updateFallingItems(dt);
 
-    requestAnimationFrame(gameLoop);
-}
-
-// Spawn Margs
-function spawnMarg() {
-    const marg = createSVGElement("image");
-
-    marg.setAttribute("id", "marg");
-    marg.setAttribute("width", PLAYER_SIZE);
-    marg.setAttribute("height", PLAYER_SIZE);
-    marg.setAttribute("href", "noelle_resources/marg.png");
-
-    marg.setAttribute(
-        "x",
-        Math.random() * Math.max(0, canvasWidth - PLAYER_SIZE)
-    );
-
-    // Spawn above the screen
-    marg.setAttribute("y", -PLAYER_SIZE);
-
-    canvas.appendChild(marg);
-}
-
-// Spawn Margs every 2-4 seconds
-function margSpawnLoop() {
-    spawnMarg();
-
-    setTimeout(
-        margSpawnLoop,
-        Math.random() * 1000 + 800
-    );
-}
-
-// Make Margs fall
-function margFallLoop() {
-    const margs = document.querySelectorAll("#marg");
-
-    margs.forEach((marg) => {
-        const y = parseFloat(marg.getAttribute("y"));
-
-        marg.setAttribute("y", y + 2);
-
-        // Remove when below the canvas
-        if (y > canvasHeight) {
-            marg.remove();
-        }
-    });
-}
-
-// Play sound effects
-function playSound(int) {
-    if (int === 1) {
-        const audio = new Audio("noelle_resources/score.mp3");
-        audio.play().catch(() => {});
-    } else if (int === 2) {
-        const audio = new Audio("noelle_resources/marg.mp3");
-        audio.play().catch(() => {});
+    if (gameRunning) {
+        animationFrameId = requestAnimationFrame(gameLoop);
     }
 }
 
-// Check Marg collisions
-function checkCollision() {
-    const margs = document.querySelectorAll("#marg");
+// WIN CONDITION
+function winGame() {
+    if (gameWon) return;
 
-    margs.forEach((marg) => {
-        const margX = parseFloat(marg.getAttribute("x"));
-        const margY = parseFloat(marg.getAttribute("y"));
+    gameWon = true;
+    gameRunning = false;
 
-        const playerX = playerState.x;
-        const playerY = playerState.y;
+    clearTimeout(margSpawnTimeout);
+    clearTimeout(tomatoSpawnTimeout);
 
-        // Player collision
-        if (
-            margX < playerX + PLAYER_SIZE &&
-            margX + PLAYER_SIZE > playerX &&
-            margY < playerY + PLAYER_SIZE &&
-            margY + PLAYER_SIZE > playerY
-        ) {
-            marg.remove();
+    keys.left = false;
+    keys.right = false;
+    keys.jump = false;
 
-            score++;
-            playSound(1);
-            updateBlur();
-            const scoreLabel = document.getElementById("score");
+    document.getElementById("final-score").textContent = score;
 
-            if (scoreLabel) {
-                scoreLabel.textContent =
-                    String(score).padStart(4, "0");
-            }
+    // Hide game and show victory
+    document.getElementById("game-screen").classList.add("hidden");
+    document.getElementById("win-screen").classList.remove("hidden");
 
-            return;
-        }
-
-        // Ground collision
-        if (
-            margY + PLAYER_SIZE >= canvasHeight - GROUND_HEIGHT
-        ) {
-            marg.remove();
-        }
-    });
-}
-function updateBlur() {
-    // Increase blur by 0.1px for every point
-    const blurAmount = Math.min(score * 0.1, 20);
-
-    canvas.style.filter = `blur(${blurAmount}px)`;
-    // make darkness increase with blur
-    const darkness = Math.min(score * 0.02, 0.5);
-    canvas.style.backgroundColor = `rgba(135, 206, 235, ${1 - darkness})`;
+    window.scrollTo(0, 0);
 }
 
-// Initialize game
-function start() {
+// Start or restart game
+function startGame() {
+    clearTimeout(margSpawnTimeout);
+    clearTimeout(tomatoSpawnTimeout);
+
+    if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId);
+    }
+
+    score = 0;
+    gameWon = false;
+    gameRunning = true;
+
+    lastTime = null;
+    animationTimer = 0;
+    currentFrame = 0;
+
+    keys.left = false;
+    keys.right = false;
+    keys.jump = false;
+
+    playerState.x = 100;
+    playerState.y = 100;
+    playerState.vx = 0;
+    playerState.vy = 0;
+    playerState.grounded = false;
+    playerState.facing = 1;
+
+    // Clear old SVG elements
+    canvas.replaceChildren();
+
     createGround();
     createPlayer();
 
+    // Show game screen before measuring SVG size
+    document.getElementById("intro-screen").classList.add("hidden");
+    document.getElementById("win-screen").classList.add("hidden");
+    document.getElementById("game-screen").classList.remove("hidden");
+
     resizeCanvas();
+
+    document.getElementById("score").textContent = "0000";
+
+    updateBlur();
     renderPlayer();
 
-    // Start spawning Margs after 2 seconds
-    setTimeout(margSpawnLoop, 2000);
-
-    // Marg falling and collision detection
-    setInterval(margFallLoop, 16);
-    setInterval(checkCollision, 16);
-
-    // Handle resizing
-    window.addEventListener("resize", resizeCanvas);
+    // Begin spawning items
+    margSpawnTimeout = setTimeout(margSpawnLoop, 2000);
+    tomatoSpawnTimeout = setTimeout(tomatoSpawnLoop, 2000);
 
     // Start game loop
-    requestAnimationFrame(gameLoop);
+    animationFrameId = requestAnimationFrame(gameLoop);
+
+    window.scrollTo(0, 0);
 }
 
-start();
+// Buttons
+document.getElementById("start-button").addEventListener(
+    "click",
+    startGame
+);
+
+document.getElementById("restart-button").addEventListener(
+    "click",
+    startGame
+);
+
+// Handle resizing
+window.addEventListener("resize", () => {
+    if (gameRunning && ground && player) {
+        resizeCanvas();
+    }
+});

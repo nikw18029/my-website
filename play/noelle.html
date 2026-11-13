@@ -4,25 +4,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="noelle.js" defer></script>
-    <title>Happy Birthday Pumpkin</title>
+    <title>Happy Birthday Pumpkin! 🎃</title>
     <link rel="stylesheet" href="noelle-style.css">
+    <script src="noelle.js" defer></script>
 </head>
 <body>
-    <main class="game-container">
-        <div class="score-board">
-            <span class="score-decoration">🎃</span>
-            <div class="score-content">
-                <span class="score-title">Points</span>
-                <span id="score">0000</span>
-            </div>
-            <span class="score-decoration">🎃</span>
-        </div>
 
-        <svg id="canvas"
-             viewBox="0 0 1920 1080"
-             preserveAspectRatio="xMidYMid slice">
-        </svg>
+    <main class="game-container">
+
+        <!-- INTRO SCREEN -->
+        <section id="intro-screen" class="intro-screen">
+            <div class="birthday-card">
+                <div class="fall-decorations">🍂 🎃 🍁</div>
+
+                <h1>Happy Birthday Pumpkin!</h1>
+                <h2>I miss you so much! 💛</h2>
+
+                <div class="birthday-message">
+                    <p>
+                        I made a little game for you! It's not
+                        my best work but I drew all the art myself!
+                    </p>
+
+                    <p>
+                        So the goal of this game is your ideal weekend.
+                        <strong>Getting as drunk as possible.</strong>
+                    </p>
+
+                    <p>
+                        As you get drunk off the margs your screen
+                        will get blurrier, making it harder to
+                        get drunk. Don't stop drinking!
+                    </p>
+
+                    <p>
+                        I did debate adding Alex as a final boss
+                        but I figured you'd prefer if he just
+                        wasn't here at all.
+                    </p>
+
+                    <p class="love-message">
+                        You mean the world to me pumpkin! 💕
+                    </p>
+
+                    <p class="final-message">
+                        Go get drunk off your ass baby!
+                    </p>
+                </div>
+
+                <h3 class="section-heading">Meet the Gang!</h3>
+
+                <div class="item-cards">
+
+                    <div class="item-card pig-card">
+                        <img
+                            src="noelle_resources/pig_1.png"
+                            alt="Pig"
+                        >
+                        <h3>🐷 You!</h3>
+                        <p>
+                            You're the pig!
+                        </p>
+                        <span class="item-effect neutral">
+                            The Main Character
+                        </span>
+                    </div>
+
+                    <div class="item-card marg-card">
+                        <img
+                            src="noelle_resources/marg.png"
+                            alt="Margarita"
+                        >
+                        <h3>🍹 Margs</h3>
+                        <p>
+                            Catch these to get
+                            more points!
+                        </p>
+                        <span class="item-effect positive">
+                            +1 Point
+                        </span>
+                    </div>
+
+                    <div class="item-card tomato-card">
+                        <img
+                            src="noelle_resources/tomato.png"
+                            alt="Tomato"
+                        >
+                        <h3>🍅 Tomatoes</h3>
+                        <p>
+                            Avoid these!
+                            You're allergic!
+                        </p>
+                        <span class="item-effect negative">
+                            -1 Point
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="instructions">
+                    <h3> How to Play </h3>
+
+                    <p>
+                        <strong>A / D</strong> or
+                        <strong>← / →</strong> to move
+                    </p>
+
+                    <p>
+                        <strong>W / ↑ / Space</strong> to jump
+                    </p>
+
+                    <p>
+                        Reach <strong>100% tipsy</strong> to win!
+                    </p>
+                </div>
+
+                <button id="start-button" class="cute-button">
+                    🎃 Play! 🎃
+                </button>
+            </div>
+        </section>
+
+        <!-- GAME SCREEN -->
+        <section id="game-screen" class="game-screen hidden">
+
+            <div class="game-header">
+                <div class="score-board">
+                    <span class="score-decoration">🎃</span>
+
+                    <div class="score-content">
+                        <span class="score-title">Points</span>
+                        <span id="score">0000</span>
+                    </div>
+
+                    <span class="score-decoration">🎃</span>
+                </div>
+
+                <div class="tipsy-container">
+                    <div class="tipsy-label">
+                        <span>🍹Tipsy Meter</span>
+                        <span id="tipsy-percent">0%</span>
+                    </div>
+
+                    <div class="tipsy-bar">
+                        <div id="tipsy-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="canvas-wrapper">
+                <svg id="canvas"></svg>
+                <div id="vignette"></div>
+            </div>
+
+            <p class="game-hint">
+                Catch the margs! Avoid the tomatoes!
+            </p>
+
+        </section>
+
+        <!-- WIN SCREEN -->
+        <section id="win-screen" class="win-screen hidden">
+            <div class="birthday-card win-card">
+
+                <div class="fall-decorations">
+                    🎉 🎃 🎉
+                </div>
+
+                <h1>YOU DID IT, PUMPKIN!</h1>
+
+                <h2>100% Tipsy! 🍹</h2>
+
+                <img
+                    src="noelle_resources/pig_1.png"
+                    alt="Your pig"
+                    class="win-pig"
+                >
+
+                <p class="final-message">
+                    You mean the world to me Pumpkin! 🎃
+                </p>
+
+                <div class="final-score">
+                    Final Score:
+                    <span id="final-score">40</span>
+                </div>
+
+                <button id="restart-button" class="cute-button">
+                    Play Again!
+                </button>
+
+            </div>
+        </section>
+
     </main>
+
 </body>
 </html>

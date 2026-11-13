@@ -8,37 +8,236 @@
 body {
     margin: 0;
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #a74e1a;
+    background: #a74e1a;
     font-family: 'Fredoka', sans-serif;
+    color: #69391f;
 }
 
-/* Game layout */
+/* GENERAL LAYOUT */
+
 .game-container {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 25px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* INTRO */
+
+.intro-screen,
+.win-screen {
+    width: 100%;
+    max-width: 950px;
+}
+
+.birthday-card {
+    background: #fff0cf;
+    border: 7px solid #bd7a23;
+    border-radius: 30px;
+    padding: 35px;
+    text-align: center;
+
+    box-shadow:
+        0 10px 0 #743b20,
+        0 18px 35px rgba(50, 20, 5, 0.3);
+}
+
+.birthday-card h1 {
+    color: #a74e1a;
+    font-size: clamp(30px, 5vw, 52px);
+    margin: 12px 0;
+}
+
+.birthday-card h2 {
+    color: #bc6d32;
+    font-size: 25px;
+    margin-bottom: 25px;
+}
+
+.fall-decorations {
+    font-size: 32px;
+    letter-spacing: 10px;
+}
+
+.fall-decorations.bottom {
+    margin-top: 25px;
+}
+
+.birthday-message {
+    max-width: 650px;
+    margin: 0 auto;
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+.birthday-message p {
+    margin-bottom: 18px;
+}
+
+.love-message {
+    font-size: 23px;
+    font-weight: 700;
+    color: #bd6277;
+}
+
+.final-message {
+    font-size: 21px;
+    font-weight: 700;
+    color: #a74e1a;
+}
+
+.section-heading {
+    font-size: 27px;
+    color: #a74e1a;
+    margin: 35px 0 20px;
+}
+
+/* ITEM CARDS */
+
+.item-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin: 20px 0 35px;
+}
+
+.item-card {
+    background: #fffaf0;
+    border: 4px solid #e9ab56;
+    border-radius: 22px;
+    padding: 22px 15px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    box-shadow: 0 5px 0 #d29a5d;
+    transition: transform 0.2s ease;
+}
+
+.item-card:hover {
+    transform: translateY(-6px) rotate(-1deg);
+}
+
+.item-card img {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    margin-bottom: 10px;
+}
+
+.item-card h3 {
+    margin: 8px 0;
+    font-size: 22px;
+}
+
+.item-card p {
+    font-size: 14px;
+    line-height: 1.5;
+    flex: 1;
+}
+
+.item-effect {
+    display: inline-block;
+    padding: 8px 13px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+.positive {
+    background: #d7edbb;
+    color: #42752e;
+}
+
+.negative {
+    background: #ffd1cc;
+    color: #a83e32;
+}
+
+.neutral {
+    background: #ffe4b4;
+    color: #a46b26;
+}
+
+/* INSTRUCTIONS */
+
+.instructions {
+    background: #fbe0b0;
+    border: 3px dashed #d69c52;
+    border-radius: 20px;
+    padding: 18px;
+    margin: 20px auto 30px;
+    max-width: 450px;
+}
+
+.instructions h3 {
+    color: #a74e1a;
+    margin-top: 0;
+}
+
+.instructions p {
+    margin: 8px 0;
+}
+
+/* BUTTONS */
+
+.cute-button {
+    background: #d78338;
+    color: white;
+    border: 4px solid #a75a2b;
+    border-radius: 30px;
+
+    padding: 16px 35px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow: 0 6px 0 #743b20;
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.cute-button:hover {
+    background: #e99a50;
+    transform: translateY(-3px);
+}
+
+.cute-button:active {
+    transform: translateY(5px);
+    box-shadow: 0 1px 0 #743b20;
+}
+
+/* GAME SCREEN */
+
+.game-screen {
     width: 80vw;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
-    padding: 20px 0;
+    gap: 18px;
 }
 
-/* Game canvas */
-#canvas {
-    width: 100%;
-    height: 75vh;
-    border: 20px solid #bd7a23;
-    border-radius: 18px;
-    background-color: #87CEEB;
-    image-rendering: pixelated;
-    display: block;
-    filter: blur(0px);
-    transition: filter 0.4s ease;
+.game-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
 }
 
-/* Cute fall scoreboard */
+/* SCOREBOARD */
+
 .score-board {
     display: flex;
     align-items: center;
@@ -48,15 +247,15 @@ body {
     padding: 10px 28px;
     min-width: 230px;
 
-    background-color: #fff0cf;
+    background: #fff0cf;
     border: 4px solid #e9ab56;
     border-radius: 25px;
 
-    box-shadow: 0 6px 0 #743b20,
-                0 8px 15px rgba(65, 30, 10, 0.2);
+    box-shadow:
+        0 6px 0 #743b20,
+        0 8px 15px rgba(65, 30, 10, 0.2);
 }
 
-/* Score text */
 .score-content {
     display: flex;
     flex-direction: column;
@@ -68,40 +267,186 @@ body {
     color: #a75a2b;
     font-size: 14px;
     font-weight: 600;
-    letter-spacing: 1px;
 }
 
 #score {
     color: #6f3d20;
     font-size: 30px;
     font-weight: 700;
-    line-height: 1.1;
     font-variant-numeric: tabular-nums;
 }
 
-/* Fall decorations */
 .score-decoration {
     font-size: 28px;
-    user-select: none;
 }
 
-/* Small screens */
-@media (max-width: 600px) {
+/* TIPSY METER */
+
+.tipsy-container {
+    width: 280px;
+    max-width: 100%;
+    background: #fff0cf;
+    border: 3px solid #e9ab56;
+    border-radius: 20px;
+    padding: 12px 18px;
+}
+
+.tipsy-label {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.tipsy-bar {
+    width: 100%;
+    height: 17px;
+    background: #e8d1a2;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+#tipsy-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(
+        90deg,
+        #e9ac5c,
+        #d67e32,
+        #a74e1a
+    );
+    border-radius: 20px;
+    transition: width 0.4s ease;
+}
+
+/* GAME CANVAS */
+
+.canvas-wrapper {
+    width: 100%;
+    height: 65vh;
+    min-height: 300px;
+    position: relative;
+    border: 20px solid #bd7a23;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #87CEEB;
+}
+
+#canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #87CEEB;
+    image-rendering: pixelated;
+
+    filter: blur(0px);
+    transition: filter 0.4s ease;
+}
+
+/* VIGNETTE */
+
+#vignette {
+    position: absolute;
+    inset: 0;
+
+    background: radial-gradient(
+        ellipse at center,
+        transparent 25%,
+        rgba(40, 15, 5, 0.85) 100%
+    );
+
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+.game-hint {
+    color: #fff0cf;
+    font-weight: 600;
+    text-align: center;
+    font-size: 15px;
+}
+
+/* WIN SCREEN */
+
+.win-card {
+    max-width: 650px;
+    margin: auto;
+}
+
+.win-pig {
+    width: 130px;
+    height: 130px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    margin: 15px;
+    animation: pigBounce 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes pigBounce {
+    from {
+        transform: translateY(0) rotate(-5deg);
+    }
+
+    to {
+        transform: translateY(-15px) rotate(5deg);
+    }
+}
+
+.win-card p {
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.final-score {
+    display: inline-block;
+    padding: 12px 25px;
+    margin: 20px 0;
+    background: #fbe0b0;
+    border-radius: 20px;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.win-card .cute-button {
+    display: block;
+    margin: 15px auto;
+}
+
+/* MOBILE */
+
+@media (max-width: 650px) {
     .game-container {
-        width: 95vw;
+        padding: 12px;
     }
 
-    #canvas {
+    .birthday-card {
+        padding: 20px 14px;
+    }
+
+    .item-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .item-card {
+        padding: 15px;
+    }
+
+    .game-screen {
+        width: 100%;
+    }
+
+    .canvas-wrapper {
+        height: 60vh;
         border-width: 10px;
-        height: 70vh;
     }
 
-    .score-board {
-        padding: 8px 18px;
-        gap: 12px;
+    .birthday-message {
+        font-size: 15px;
     }
 
-    .score-decoration {
-        font-size: 22px;
+    .fall-decorations {
+        font-size: 25px;
     }
 }
